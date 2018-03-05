@@ -2,6 +2,12 @@
 
 Dash RPC Client.
 
+## Install
+
+```
+npm install --save dash-client
+```
+
 ## Usage
 
 ```
