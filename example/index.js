@@ -1,6 +1,6 @@
-const createDashClient = require('..');
+const createJsonRpcClient = require('..');
 
-const dashClient = createDashClient({
+const dashClient = createJsonRpcClient({
     rpchost: '127.0.0.1',
     rpcuser: 'user',
     rpcpassword: 'password',

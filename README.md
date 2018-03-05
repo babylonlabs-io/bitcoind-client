@@ -1,11 +1,11 @@
-# dash-client
+# dashd-client
 
-Dash RPC Client.
+Dash daemon RPC Client.
 
 ## Install
 
 ```
-npm install --save dash-client
+npm install --save dashd-client
 ```
 
 ## Usage
