@@ -1,6 +1,6 @@
 {
   "name": "dashd-client",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Dashd JSON-RPC Client",
   "main": "index.js",
   "scripts": {
