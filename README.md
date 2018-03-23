@@ -1,23 +1,36 @@
-# dashd-client
+# bitcoind-client
 
-Dash daemon RPC Client.
+Bitcoind JsonRPC client.
 
 ## Install
 
 ```
-npm install --save dashd-client
+npm install --save bitcoind-client
 ```
 
 ## Usage
 
 ```
-const createDashClient = require('dash-client');
-const dashClient = createDashClient({
+const { createCall } = require('bitcoind-client');
+const call = createCall({
     rpchost: '127.0.0.1',
     rpcuser: 'user',
     rpcpassword: 'password',
     rpcport: '9998',
 });
 
-dashClient.request('getwalletinfo').then(res => console.log(res));
+call('getwalletinfo')
+    .then(result => console.info(result))
+    .catch(e => console.error(e))
+;
 ```
+
+## Developement
+```
+npm test
+npm run prettier
+```
+
+## Licence
+
+MIT
