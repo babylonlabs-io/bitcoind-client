@@ -25,6 +25,12 @@ call('getwalletinfo')
 ;
 ```
 
+> For node you need to require a `fetch` implementation.
+> `isomorphic-fetch` is recommended and marked as a peerDependency.
+> ```
+> npm install --save isomorphic-fetch
+> ```
+
 ## Developement
 ```
 npm test
