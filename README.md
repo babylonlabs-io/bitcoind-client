@@ -1,15 +1,12 @@
 # bitcoind-client
-
-Bitcoind JsonRPC client.
+Bitcoind JsonRPC client for node and the browser.
 
 ## Install
-
 ```
 npm install --save bitcoind-client
 ```
 
 ## Usage
-
 ```
 const { createCall } = require('bitcoind-client');
 const call = createCall({
@@ -38,5 +35,4 @@ npm run prettier
 ```
 
 ## Licence
-
 MIT
