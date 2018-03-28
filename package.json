@@ -1,7 +1,7 @@
 {
   "engines": { "node" : ">=8" },
   "name": "bitcoind-client",
-  "version": "2.1.6",
+  "version": "2.1.7",
   "description": "Bitcoin JSON-RPC client in javascript",
   "main": "index.js",
   "scripts": {

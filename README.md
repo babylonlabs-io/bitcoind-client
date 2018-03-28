@@ -45,5 +45,5 @@ MIT
 
 [npm-svg]: https://img.shields.io/npm/v/bitcoind-client.svg
 [npm-url]: https://npmjs.org/package/bitcoind-client
-[travis-svg]: https://travis-ci.org/lepetitbloc/bitcoind-client.svg
-[travis-url]: https://travis-ci.org/lepetitbloc/bitcoind-client
+[travis-svg]: https://travis-ci.org/LePetitBloc/bitcoind-client.svg
+[travis-url]: https://travis-ci.org/LePetitBloc/bitcoind-client
