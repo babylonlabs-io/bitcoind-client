@@ -1,5 +1,11 @@
 # bitcoind-client
+
+[![NPM package version][npm-svg]][npm-url]
+[![Build Status on Travis][travis-svg]][travis-url]
+
 Bitcoind JsonRPC client for node and the browser.
+
+> This client should be compatible with all `bitcoin` forks, to name a few: Dash, PivX, etc...
 
 ## Install
 ```
@@ -36,3 +42,8 @@ npm run prettier
 
 ## Licence
 MIT
+
+[npm-svg]: https://img.shields.io/npm/v/bitcoind-client.svg
+[npm-url]: https://npmjs.org/package/bitcoind-client
+[travis-svg]: https://travis-ci.org/lepetitbloc/bitcoind-client.svg
+[travis-url]: https://travis-ci.org/lepetitbloc/bitcoind-client
