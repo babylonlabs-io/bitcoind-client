@@ -31,6 +31,9 @@ test('generateId', () => {
     expect.stringContaining('getwalletinfo')
   );
   expect(generateId('getwalletinfo')).not.toEqual(generateId('getwalletinfo'));
+  expect(generateId('listreceivedbyaddress', [0, true])).toEqual(
+      expect.stringContaining('listreceivedbyaddress_0_true')
+  );
 });
 
 test('s4', () => {
