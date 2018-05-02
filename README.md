@@ -34,7 +34,7 @@ call('getwalletinfo')
 > npm install --save isomorphic-fetch
 > ```
 
-## Developement
+## Development
 ```
 npm test
 npm run prettier
