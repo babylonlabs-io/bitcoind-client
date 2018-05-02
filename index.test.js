@@ -32,7 +32,7 @@ test('generateId', () => {
   );
   expect(generateId('getwalletinfo')).not.toEqual(generateId('getwalletinfo'));
   expect(generateId('listreceivedbyaddress', [0, true])).toEqual(
-      expect.stringContaining('listreceivedbyaddress_0_true')
+    expect.stringContaining('listreceivedbyaddress_0_true')
   );
 });
 
