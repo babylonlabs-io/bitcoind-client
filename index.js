@@ -1,3 +1,5 @@
+const JsonRpcError = require('./JsonRpcError');
+
 const REQUEST = {
   method: 'POST',
 };
@@ -70,33 +72,38 @@ const s4 = () =>
 /**
  * Create an error handler for given method.
  *
- * @param {String} method
- * @returns {function(*)}
+ * @param {Object} context
+ * @returns {Function}
  */
-const createErrorHandler = method => {
-    /**
-     * Throw an `Error` if the response is not in `ok` state.
-     * Return the `Response` unchanged otherwise.
-     *
-     * @param {Response} response
-     * @returns {Response}
-     * @throws Error
-     */
-    return response => {
-      if (!response.ok) {
-          switch(response.status) {
-              case 404:
-                  throw new Error(`Method '${method}' doesn't exists.`);
-              case 500:
-                  return response;
-              default:
-                  throw new Error(response.statusText);
-          }
+const createErrorHandler = context =>
+  /**
+   * Throw an `Error` if the response is not in `ok` state.
+   * Return the `Response` unchanged otherwise.
+   *
+   * @param {Response} response
+   * @returns {Response}
+   * @throws Error
+   */
+  response => {
+    if (!response.ok) {
+      switch (response.status) {
+        case 404:
+          throw new JsonRpcError('Method nod found.', {
+            ...context,
+            code: 404,
+          });
+        case 500:
+          return response;
+        default:
+          throw new JsonRpcError(response.statusText, {
+            ...context,
+            code: response.status,
+          });
       }
-
-      return response;
     }
-};
+
+    return response;
+  };
 
 /**
  * Shorthand method, transform the `Response` to a Json response object.
@@ -110,17 +117,26 @@ const toJson = response => response.json();
  * Throw an error if the Json response object contains a `JsonRPC` error.
  * Return the Json response object unchanged otherwise.
  *
- * @param {Object} jsonResponse
- * @returns {Object}
- * @throws Error
+ * @param {Object} context
+ * @returns {Function}
  */
-const handleJsonError = jsonResponse => {
-  if (jsonResponse.error) {
-    throw new Error(`Request '${jsonResponse.id}' failed with code '${jsonResponse.error.code}':\n${jsonResponse.error.message}`);
-  }
+const handleJsonError = (context = {}) =>
+  /**
+   * @param {Object} jsonResponse
+   * @returns {Object}
+   * @throws Error
+   */
+  jsonResponse => {
+    if (jsonResponse.error) {
+      const { message, code } = jsonResponse.error;
+      throw new JsonRpcError(message, {
+        ...context,
+        code,
+      });
+    }
 
-  return jsonResponse;
-};
+    return jsonResponse;
+  };
 
 /**
  * Return the result key of the Json response object.
@@ -156,20 +172,26 @@ const createCall = ({
     },
   };
 
-  return (method, ...params) =>
-    fetch(endpoint, {
+  return (method, ...params) => {
+    const arrayParams = toArray(params);
+    const context = {
+      id: generateId(method, arrayParams),
+      method,
+      params: arrayParams,
+    };
+
+    return fetch(endpoint, {
       ...request,
       body: JSON.stringify({
         ...BODY,
-        id: generateId(method, toArray(params)),
-        method,
-        params: toArray(params),
+        ...context,
       }),
     })
-      .then(createErrorHandler(method))
+      .then(createErrorHandler({ ...context, rpcuser, endpoint }))
       .then(toJson)
-      .then(handleJsonError)
+      .then(handleJsonError({ ...context, rpcuser, endpoint }))
       .then(toResult);
+  };
 };
 
 module.exports = {
