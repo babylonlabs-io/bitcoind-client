@@ -3,13 +3,13 @@
     "node": ">=8"
   },
   "name": "bitcoind-client",
-  "version": "2.2.8",
+  "version": "2.2.9",
   "description": "Bitcoin JSON-RPC client in javascript",
   "main": "index.js",
   "scripts": {
     "test": "jest",
     "prettier": "prettier --single-quote --trailing-comma es5 --write \"./**/*.js\"",
-    "e2e": "node e2e/index.js"
+    "bitcoind": "docker run --net=host -p 18332:18332 -e DISABLEWALLET=0 kylemanna/bitcoind -testnet -rpcallowip=::/0 -rpcuser=test -rpcpassword=test"
   },
   "repository": {
     "type": "git",

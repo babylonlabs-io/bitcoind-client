@@ -1,6 +1,16 @@
-language: node_js
 os:
  - linux
+
+sudo: required
+
+services:
+  - docker
+
+before_script: npm run bitcoind
+
+script: npm test
+
+language: node_js
 node_js:
   - "9"
   - "8"
