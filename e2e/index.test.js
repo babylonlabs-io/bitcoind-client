@@ -41,3 +41,9 @@ test('getwalletinfo', () => {
     })
   );
 });
+
+test('getaccountaddress', () => {
+    expect.assertions(1);
+
+    return expect(call('getaccountaddress', "")).resolves.toEqual(expect.any(String));
+});
