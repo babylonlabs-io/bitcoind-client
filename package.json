@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LePetitBloc/bitcoind-client.git"
+    "url": "git+https://github.com/babylonlabs-io/bitcoind-client.git"
   },
   "keywords": [
     "bitcoin",
@@ -22,12 +22,7 @@
     "jsonrpc",
     "client"
   ],
-  "author": "lutangar <johan.dufour@gmail.com>",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/LePetitBloc/dash-client/issues"
-  },
-  "homepage": "https://github.com/LePetitBloc/dash-client#readme",
   "peerDependencies": {
     "isomorphic-fetch": "^2.2.1"
   },
@@ -35,5 +30,8 @@
     "isomorphic-fetch": "^2.2.1",
     "jest": "^22.4.3",
     "prettier": "1.11.1"
+  },
+  "publishConfig": {
+  "registry": "https://npm.pkg.github.com"
   }
 }

@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const JsonRpcError = require('./JsonRpcError');
 
 const REQUEST = {
@@ -22,10 +24,27 @@ const BODY = {
  * @returns {{Authorization: string}}
  */
 const createAuthorizationHeaders = (rpcuser, rpcpassword) => ({
-  Authorization: `Basic ${new Buffer(rpcuser + ':' + rpcpassword).toString(
+  Authorization: `Basic ${Buffer.from(rpcuser + ':' + rpcpassword).toString(
     'base64'
   )}`,
 });
+
+/**
+ * Read the .cookie file for authentication.
+ *
+ * @param {String} datadir
+ * @returns {String} Cookie header value
+ * @throws Error if the .cookie file cannot be read
+ */
+const readCookieFile = (datadir = '~/.bitcoin') => {
+  const cookieFilePath = path.join(datadir, '.cookie');
+  try {
+    const cookie = fs.readFileSync(cookieFilePath, 'utf8').trim();
+    return `Basic ${Buffer.from(cookie).toString('base64')}`;
+  } catch (err) {
+    throw new Error(`Failed to read .cookie file: ${err.message}`);
+  }
+};
 
 /**
  * Ensure params are an array form.
@@ -70,7 +89,7 @@ const s4 = () =>
     .substring(1);
 
 /**
- * Create an error handler for given method.
+ * Create an error handler for a given method.
  *
  * @param {Object} context
  * @returns {Function}
@@ -88,7 +107,7 @@ const createErrorHandler = context =>
     if (!response.ok) {
       switch (response.status) {
         case 404:
-          throw new JsonRpcError('Method nod found.', {
+          throw new JsonRpcError('Method not found.', {
             ...context,
             code: 404,
           });
@@ -150,10 +169,11 @@ const toResult = jsonResponse => jsonResponse.result;
  * Create the JsonRPC call function for given endpoint and credentials.
  *
  * @param {String} rpcscheme
- * @param {string} rpchost
+ * @param {String} rpchost
  * @param {Number|String} rpcport
  * @param {String} rpcuser
  * @param {String} rpcpassword
+ * @param {String} datadir Path to Bitcoin data directory for .cookie authentication
  * @returns {function(*=, ...[*]=): Promise<Object>}
  */
 const createCall = ({
@@ -162,13 +182,26 @@ const createCall = ({
   rpcport = 8332,
   rpcuser,
   rpcpassword,
+  datadir,
 }) => {
   const endpoint = buildEndpoint({ rpcscheme, rpchost, rpcport });
+  let authorizationHeader = {};
+
+  if (datadir) {
+    // Use .cookie file for authentication
+    authorizationHeader = { Authorization: readCookieFile(datadir) };
+  } else if (rpcuser && rpcpassword) {
+    // Use rpcuser and rpcpassword for authentication
+    authorizationHeader = createAuthorizationHeaders(rpcuser, rpcpassword);
+  } else {
+    throw new Error('Either datadir or rpcuser and rpcpassword must be provided for authentication.');
+  }
+
   const request = {
     ...REQUEST,
     headers: {
       ...HEADERS,
-      ...createAuthorizationHeaders(rpcuser, rpcpassword),
+      ...authorizationHeader,
     },
   };
 
@@ -199,6 +232,7 @@ module.exports = {
   HEADERS,
   BODY,
   createAuthorizationHeaders,
+  readCookieFile,
   toArray,
   buildEndpoint,
   generateId,
