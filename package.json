@@ -2,7 +2,7 @@
   "engines": {
     "node": ">=8"
   },
-  "name": "babylonlabs-bitcoind-client",
+  "name": "bitcoind-client",
   "version": "2.2.11",
   "description": "Bitcoin JSON-RPC client in javascript",
   "main": "index.js",
