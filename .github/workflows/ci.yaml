@@ -27,12 +27,17 @@ jobs:
           echo "::error::Manual dispatch may only publish main or a v* tag, got: $REF"
           exit 1
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
-      # Setup .npmrc file to publish to npmjs
+      # Node 24 ships npm >= 11.5, required for OIDC trusted publishing.
+      # No registry-url: setup-node would write an .npmrc token placeholder
+      # that breaks npm when NODE_AUTH_TOKEN is unset; the default registry
+      # is npmjs, which is where we publish.
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: '20.x'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: '24.x'
       - run: npm ci
+      # Auth is npm OIDC trusted publishing (id-token: write above) — the
+      # org pattern used by ts-sdk/btc-staking-ts/wallet-connector; no
+      # long-lived NPM_TOKEN secret. Requires the trusted publisher
+      # (repo babylonlabs-io/bitcoind-client, workflow ci.yaml) to be
+      # registered for @babylonlabs-io/bitcoind-client on npmjs.
       - run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
