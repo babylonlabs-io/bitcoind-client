@@ -1,7 +1,14 @@
-name: Publish package to GitHub Packages
+name: Publish package to npm
+# `release: published` is a dead trigger in this org: releases are created
+# by the reusable_github_release workflow using the workflow GITHUB_TOKEN,
+# and GitHub never fires workflows for events created with that token (the
+# v2.3.0 release proved it — zero runs dispatched). Follow the org pattern
+# instead (see baby-tester's publish.yml): trigger on version-tag pushes,
+# with a manual dispatch fallback for stuck/past releases.
 on:
-  release:
-    types: [published]
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
