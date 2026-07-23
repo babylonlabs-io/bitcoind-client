@@ -26,6 +26,23 @@ test('buildEndpoint', () => {
   ).toEqual('https://192.168.0.1:80');
 });
 
+test('buildEndpoint with walletName', () => {
+  expect(buildEndpoint({ rpcport: 666, walletName: 'btc-staker' })).toEqual(
+    'http://127.0.0.1:666/wallet/btc-staker'
+  );
+  // Empty string addresses the unnamed default wallet.
+  expect(buildEndpoint({ rpcport: 666, walletName: '' })).toEqual(
+    'http://127.0.0.1:666/wallet/'
+  );
+  // Wallet names may contain path-hostile characters — must be encoded.
+  expect(buildEndpoint({ rpcport: 666, walletName: 'a/b c' })).toEqual(
+    'http://127.0.0.1:666/wallet/a%2Fb%20c'
+  );
+  expect(buildEndpoint({ rpcport: 666, walletName: null })).toEqual(
+    'http://127.0.0.1:666'
+  );
+});
+
 test('generateId', () => {
   expect(generateId('getwalletinfo')).toEqual(
     expect.stringContaining('getwalletinfo')
