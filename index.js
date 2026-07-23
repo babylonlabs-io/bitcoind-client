@@ -57,16 +57,28 @@ const toArray = params => (Array.isArray(params) ? params : [params]);
 /**
  * Build the JsonRPC endpoint from scheme, host and port.
  *
+ * When `walletName` is given the endpoint targets that wallet's RPC path
+ * (`/wallet/<name>`), which is required for wallet RPCs on nodes with more
+ * than one wallet loaded. An empty string is a valid value — it addresses
+ * the unnamed default wallet (`/wallet/`).
+ *
  * @param {String} rpcscheme
  * @param {String} rpchost
  * @param {String} rpcport
+ * @param {String} [walletName]
  * @returns {String}
  */
 const buildEndpoint = ({
   rpcscheme = 'http',
   rpchost = '127.0.0.1',
   rpcport = 8332,
-}) => `${rpcscheme}://${rpchost}:${rpcport}`;
+  walletName,
+}) =>
+  `${rpcscheme}://${rpchost}:${rpcport}${
+    walletName === undefined || walletName === null
+      ? ''
+      : `/wallet/${encodeURIComponent(walletName)}`
+  }`;
 
 /**
  * Generate a string id for given method and params.
@@ -174,6 +186,9 @@ const toResult = jsonResponse => jsonResponse.result;
  * @param {String} rpcuser
  * @param {String} rpcpassword
  * @param {String} datadir Path to Bitcoin data directory for .cookie authentication
+ * @param {String} [walletName] Target a specific wallet's RPC path (`/wallet/<name>`),
+ *                              required for wallet RPCs on multi-wallet nodes.
+ *                              `''` addresses the unnamed default wallet.
  * @returns {function(*=, ...[*]=): Promise<Object>}
  */
 const createCall = ({
@@ -183,8 +198,9 @@ const createCall = ({
   rpcuser,
   rpcpassword,
   datadir,
+  walletName,
 }) => {
-  const endpoint = buildEndpoint({ rpcscheme, rpchost, rpcport });
+  const endpoint = buildEndpoint({ rpcscheme, rpchost, rpcport, walletName });
   let authorizationHeader = {};
 
   if (datadir) {
